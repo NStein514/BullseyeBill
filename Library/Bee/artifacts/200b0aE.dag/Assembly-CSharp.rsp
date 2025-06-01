@@ -436,6 +436,7 @@
 "Assets/Scripts/MonsterSpawner.cs"
 "Assets/Scripts/ObjectPooler.cs"
 "Assets/Scripts/PlayerController.cs"
+"Assets/Scripts/PowerUp.cs"
 "Assets/Scripts/SaveData.cs"
 "Assets/Scripts/SaveSystem.cs"
 "Assets/Scripts/SettingsManager.cs"

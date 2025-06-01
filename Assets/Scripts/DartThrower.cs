@@ -1,7 +1,10 @@
+using System.Collections;
 using UnityEngine;
 
 public class DartThrower : MonoBehaviour
 {
+    public static DartThrower Instance;
+
     [Header("Dart Settings")]
     public GameObject dartPrefab;
     public Transform firePoint;
@@ -34,7 +37,15 @@ public class DartThrower : MonoBehaviour
 
         if (rb != null)
         {
-            rb.linearVelocity = firePoint.forward * throwForce; 
+            rb.linearVelocity = firePoint.forward * throwForce;
         }
+    }
+
+    public IEnumerator EnableRapidFire(float duration)
+    {
+        float originalRate = fireRate;
+        fireRate /= 2f; // or any other speed multiplier 
+        yield return new WaitForSeconds(duration);
+        fireRate = originalRate; 
     }
 }

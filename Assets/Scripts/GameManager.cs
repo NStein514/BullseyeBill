@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -39,7 +40,7 @@ public class GameManager : MonoBehaviour
         if (isGameOver) return;
 
         score += amount;
-        UIManager.Instance.UpdateScore(score); 
+        UIManager.Instance.UpdateScore(score);
     }
 
     public void LoseLife(int damageToPlayer)
@@ -47,7 +48,7 @@ public class GameManager : MonoBehaviour
         if (isGameOver) return;
 
         playerLives--;
-        UIManager.Instance.UpdateLives(playerLives); 
+        UIManager.Instance.UpdateLives(playerLives);
 
         if (playerLives <= 0)
         {
@@ -58,7 +59,7 @@ public class GameManager : MonoBehaviour
     public void EndGame()
     {
         isGameOver = true;
-        UIManager.Instance.ShowGameOver(); 
+        UIManager.Instance.ShowGameOver();
         Time.timeScale = 0f; // Pause the game
     }
 
@@ -76,5 +77,24 @@ public class GameManager : MonoBehaviour
     internal void LoseLife()
     {
         throw new NotImplementedException();
+    }
+
+    public void GainLife(int amount)
+    {
+        playerLives += amount;
+        UIManager.Instance.UpdateLives(playerLives);
+    }
+
+    public IEnumerator FreezeMonsters(float duration)
+    {
+        MonsterController[] monsters = FindObjectsOfType<MonsterController>();
+
+        foreach (var m in monsters)
+            m.Freeze(true);
+
+        yield return new WaitForSeconds(duration);
+
+        foreach (var m in monsters)
+            m.Freeze(false); 
     }
 }

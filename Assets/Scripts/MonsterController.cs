@@ -6,6 +6,7 @@ public class MonsterController : MonoBehaviour
     public float moveSpeed = 2f;
     public int maxHealth = 3;
     private int currentHealth;
+    private bool isFrozen = false;
 
     [Header("Target")]
     public Transform target; // The Bullseye 
@@ -33,6 +34,8 @@ public class MonsterController : MonoBehaviour
             Vector3 direction = (target.position - transform.position).normalized;
             transform.position += direction * moveSpeed * Time.deltaTime;
         }
+
+        if (isFrozen || isActiveAndEnabled) return; 
     }
 
     public void TakeDamage(int amount)
@@ -61,7 +64,12 @@ public class MonsterController : MonoBehaviour
         else if (other.CompareTag("Dart"))
         {
             TakeDamage(1); // Adjust damage dealth as needed 
-            Destroy(other.gameObject); 
+            Destroy(other.gameObject);
         }
+    }
+
+    public void Freeze(bool freeze)
+    {
+        isFrozen = freeze; 
     }
 }
