@@ -434,7 +434,11 @@
 "Assets/Scripts/LevelManager.cs"
 "Assets/Scripts/MonsterController.cs"
 "Assets/Scripts/MonsterSpawner.cs"
+"Assets/Scripts/ObjectPooler.cs"
 "Assets/Scripts/PlayerController.cs"
+"Assets/Scripts/SaveData.cs"
+"Assets/Scripts/SaveSystem.cs"
+"Assets/Scripts/SettingsManager.cs"
 "Assets/Scripts/UIManager.cs"
 "Assets/TutorialInfo/Scripts/Readme.cs"
 -langversion:9.0

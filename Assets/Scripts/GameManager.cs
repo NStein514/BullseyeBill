@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -41,7 +42,7 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.UpdateScore(score); 
     }
 
-    public void LoseLife()
+    public void LoseLife(int damageToPlayer)
     {
         if (isGameOver) return;
 
@@ -70,5 +71,10 @@ public class GameManager : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    internal void LoseLife()
+    {
+        throw new NotImplementedException();
     }
 }
