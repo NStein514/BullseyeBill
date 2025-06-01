@@ -425,10 +425,12 @@
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.50f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.50f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.50f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
+"Assets/Scripts/Dart.cs"
 "Assets/Scripts/GameManager.cs"
 "Assets/Scripts/LevelManager.cs"
 "Assets/Scripts/MonsterController.cs"
 "Assets/Scripts/MonsterSpawner.cs"
+"Assets/Scripts/PlayerController.cs"
 "Assets/Scripts/UIManager.cs"
 "Assets/TutorialInfo/Scripts/Readme.cs"
 -langversion:9.0
