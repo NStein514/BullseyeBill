@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     public Transform firePoint;
     public float throwForce = 25f;
     public float fireRate = 0.5f;
+    private DartThrower dartThrower; 
 
     private float fireCooldown = 0f;
     private Camera cam;
@@ -14,6 +15,8 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         cam = Camera.main;
+
+        dartThrower = GetComponent<DartThrower>(); 
 
         if (firePoint == null)
             Debug.LogWarning("Fire Point not Assigned to PlayerController");
@@ -25,24 +28,10 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButton(0) && fireCooldown <= 0f)
         {
-            ThrowDart();
             fireCooldown = fireRate;
         }
 
         AimAtMouse();
-    }
-
-    void ThrowDart()
-    {
-        if (dartPrefab == null || firePoint == null) return;
-
-        GameObject dart = Instantiate(dartPrefab, firePoint.position, firePoint.rotation);
-        Rigidbody rb = dart.GetComponent<Rigidbody>();
-
-        if (rb != null)
-        {
-            rb.linearVelocity = firePoint.forward * throwForce;
-        }
     }
 
     void AimAtMouse()

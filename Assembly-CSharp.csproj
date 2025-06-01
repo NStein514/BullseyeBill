@@ -49,8 +49,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets/Scripts/MonsterController.cs" />
+    <Compile Include="Assets/Scripts/Bullseye.cs" />
+    <Compile Include="Assets/Scripts/AudioManager.cs" />
     <Compile Include="Assets/Scripts/PlayerController.cs" />
     <Compile Include="Assets/Scripts/UIManager.cs" />
+    <Compile Include="Assets/Scripts/HitDetection.cs" />
+    <Compile Include="Assets/Scripts/DartThrower.cs" />
     <Compile Include="Assets/TutorialInfo/Scripts/Readme.cs" />
     <Compile Include="Assets/Scripts/MonsterSpawner.cs" />
     <Compile Include="Assets/Scripts/Dart.cs" />
