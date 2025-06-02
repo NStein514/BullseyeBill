@@ -48,23 +48,7 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.0.50f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets/Scripts/MonsterController.cs" />
-    <Compile Include="Assets/Scripts/Bullseye.cs" />
-    <Compile Include="Assets/Scripts/AudioManager.cs" />
-    <Compile Include="Assets/Scripts/PlayerController.cs" />
-    <Compile Include="Assets/Scripts/UIManager.cs" />
-    <Compile Include="Assets/Scripts/PowerUp.cs" />
-    <Compile Include="Assets/Scripts/HitDetection.cs" />
-    <Compile Include="Assets/Scripts/DartThrower.cs" />
-    <Compile Include="Assets/Scripts/SaveSystem.cs" />
-    <Compile Include="Assets/Scripts/SaveData.cs" />
     <Compile Include="Assets/TutorialInfo/Scripts/Readme.cs" />
-    <Compile Include="Assets/Scripts/MonsterSpawner.cs" />
-    <Compile Include="Assets/Scripts/ObjectPooler.cs" />
-    <Compile Include="Assets/Scripts/SettingsManager.cs" />
-    <Compile Include="Assets/Scripts/Dart.cs" />
-    <Compile Include="Assets/Scripts/LevelManager.cs" />
-    <Compile Include="Assets/Scripts/GameManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
