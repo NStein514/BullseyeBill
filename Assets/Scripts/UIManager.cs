@@ -83,4 +83,10 @@ public class UIManager : MonoBehaviour
         if (scoreText != null) scoreText.text = "Score: 0";
         if (gameOverPanel != null) gameOverPanel.SetActive(false);
     }
+
+    public void UpdateScoreDisplay(int score)
+    {
+        if (scoreText != null)
+            scoreText.text = $"Score: {score}"; 
+    }
 }
