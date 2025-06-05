@@ -428,6 +428,7 @@
 "Assets/Scripts/DartboardZone.cs"
 "Assets/Scripts/DartCollisionHandler.cs"
 "Assets/Scripts/DartThrowController.cs"
+"Assets/Scripts/Hand.cs"
 "Assets/Scripts/MonsterController.cs"
 "Assets/Scripts/MonsterManager.cs"
 "Assets/Scripts/RoundManager.cs"
