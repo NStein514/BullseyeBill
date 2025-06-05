@@ -1,52 +1,48 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class DartThrowController : MonoBehaviour
 {
     [Header("References")]
-    public Rigidbody dartRb;
+    public GameObject dartPrefab;
+    public Transform spawnPoint;
     public Camera mainCamera;
-    public Transform dartHoldPoint;
-    public GameObject handSprite; 
+    public GameObject handSprite;
 
     [Header("Throw Settings")]
     public float throwForceMultiplier = 0.1f;
     public float maxPullDistance = 200f;
     public int maxThrowsPerRound = 3;
 
+    private GameObject currentDart;
+    private Rigidbody currentRb;
     private Vector2 dragStartPos;
+    private Vector2 lastMousePosition;
+    private Vector2 mouseVelocity;
     private bool isDragging = false;
     private int throwsUsed = 0;
     private bool dartThrown = false;
-
-    private Vector2 lastMousePosition;
-    private Vector2 mouseVelocity; 
 
     void Start()
     {
         if (mainCamera == null)
             mainCamera = Camera.main;
 
-        if (dartRb == null)
-            dartRb = GetComponent<Rigidbody>();
-
-        ResetDart();
+        SpawnNewDart();
     }
 
     void Update()
     {
-        if (dartThrown || throwsUsed >= maxThrowsPerRound)
+        if (dartThrown || currentDart == null || throwsUsed >= maxThrowsPerRound)
             return;
 
         if (Input.GetMouseButtonDown(0))
         {
             dragStartPos = Input.mousePosition;
-            isDragging = true;
             lastMousePosition = dragStartPos;
+            isDragging = true;
 
-            // Attach dart to hand
-            dartRb.isKinematic = true;
-            transform.position = dartHoldPoint.position;
+            currentRb.isKinematic = true;
+            currentDart.transform.position = spawnPoint.position;
             handSprite.SetActive(true);
         }
 
@@ -55,14 +51,12 @@ public class DartThrowController : MonoBehaviour
             Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 5f));
             handSprite.transform.position = mouseWorldPos;
 
-            transform.position = dartHoldPoint.position;
+            currentDart.transform.position = spawnPoint.position;
 
-            // Track mouse velocity 
             mouseVelocity = ((Vector2)Input.mousePosition - lastMousePosition) / Time.deltaTime;
             lastMousePosition = Input.mousePosition;
         }
 
-        // On Release 
         if (Input.GetMouseButtonUp(0) && isDragging)
         {
             isDragging = false;
@@ -71,36 +65,30 @@ public class DartThrowController : MonoBehaviour
 
             float pullDistance = Mathf.Clamp((dragStartPos - (Vector2)Input.mousePosition).magnitude, 0f, maxPullDistance);
             Vector3 throwDirection = mainCamera.transform.forward + mainCamera.transform.up * 0.2f;
+            float force = pullDistance * throwForceMultiplier + mouseVelocity.magnitude * 0.0003f;
 
-            float forceMagnitude = pullDistance * throwForceMultiplier + mouseVelocity.magnitude * 0.0003f;
+            currentRb.isKinematic = false;
+            currentRb.AddForce(throwDirection.normalized * force, ForceMode.Impulse);
 
-            dartRb.isKinematic = false;
-            dartRb.AddForce(throwDirection.normalized * forceMagnitude, ForceMode.Impulse);
+            handSprite.SetActive(false);
 
-            handSprite.SetActive(false); 
+            Invoke(nameof(SpawnNewDart), 1.0f); // delay to simulate flight time
+
+            // Optional: notify RoundManager
+            // FindObjectOfType<RoundManager>()?.OnDartThrown(throwsUsed);
         }
     }
 
-    void ThrowDart(Vector3 force)
+    void SpawnNewDart()
     {
-        dartRb.isKinematic = false;
-        dartRb.AddForce(force, ForceMode.Impulse);
-        dartThrown = true;
-        throwsUsed++;
+        if (throwsUsed >= maxThrowsPerRound)
+            return;
 
-        //FindObjectOfType<RoundManager>()?.OnDartThrown(throwsUsed);
-    }
-
-    public void ResetDart()
-    {
-        dartRb.isKinematic = true;
-
-        transform.position = dartHoldPoint.position; 
-        transform.rotation = Quaternion.identity;
-
-        dartRb.Sleep();
-
-        dartThrown = false; 
+        GameObject newDart = Instantiate(dartPrefab, spawnPoint.position, Quaternion.identity);
+        currentDart = newDart;
+        currentRb = newDart.GetComponent<Rigidbody>();
+        currentRb.isKinematic = true;
+        dartThrown = false;
     }
 
     public int GetThrowsUsed() => throwsUsed;
@@ -108,6 +96,7 @@ public class DartThrowController : MonoBehaviour
     public void ResetThrows()
     {
         throwsUsed = 0;
-        ResetDart(); 
+        Destroy(currentDart);
+        SpawnNewDart();
     }
 }
