@@ -2,33 +2,36 @@ using UnityEngine;
 
 public class MonsterController : MonoBehaviour
 {
-    public int health = 10;
-    public float speed = 1f;
+    public int maxHealth = 10;
+    private int currentHealth;
 
-    public void Setup(int level)
+    private Animator animator;
+
+    void Start()
     {
-        health = 10 + level * 5;
+        currentHealth = maxHealth;
+        animator = GetComponent<Animator>();
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int damage)
     {
-        health -= amount;
-        if (health <= 0)
+        currentHealth -= damage;
+
+        if (animator != null)
+            animator.SetTrigger("Hit");
+
+        if (currentHealth <= 0)
         {
             Die();
         }
     }
 
-    public bool IsAlive() => health > 0;
-
-    public void MoveTowardPlayer(float step)
-    {
-        transform.position += Vector3.forward * step; // Move toward +Z; change as needed
-    }
-
     void Die()
     {
-        // Play animation/sound if needed
-        Destroy(gameObject, 0.1f);
+        if (animator != null)
+            animator.SetTrigger("Die");
+
+        // You can add delay for death animation here, then destroy
+        Destroy(gameObject, 0.5f);
     }
 }

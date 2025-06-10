@@ -1,102 +1,145 @@
 using UnityEngine;
+using System.Collections;
+using System.Reflection;
 
 public class DartThrowController : MonoBehaviour
 {
-    [Header("References")]
-    public GameObject dartPrefab;
-    public Transform spawnPoint;
-    public Camera mainCamera;
-    public GameObject handSprite;
-
-    [Header("Throw Settings")]
-    public float throwForceMultiplier = 0.1f;
-    public float maxPullDistance = 200f;
+    public Transform handTransform;         // The hand sprite
+    public Transform dartPrefab;            // Prefab of the dart to throw
+    public Transform dartHoldPoint;         // Where dart sits in hand
+    public float throwForceMultiplier = 10f;
     public int maxThrowsPerRound = 3;
 
-    private GameObject currentDart;
-    private Rigidbody currentRb;
-    private Vector2 dragStartPos;
-    private Vector2 lastMousePosition;
-    private Vector2 mouseVelocity;
+    public int throwsThisRound = 0;
     private bool isDragging = false;
-    private int throwsUsed = 0;
-    private bool dartThrown = false;
+    private Vector3 dragStartPos;
+    private Vector3 dragEndPos;
+    private Transform currentDart;
+
+    private Vector3 initialHandPosition;
+    private Vector3 dragStartMousePos;
+    private Vector3 dragStartHandPos; 
+
+    public delegate void ThrowEvent();
+    public event ThrowEvent OnDartThrown;
 
     void Start()
     {
-        if (mainCamera == null)
-            mainCamera = Camera.main;
-
+        initialHandPosition = handTransform.position;
         SpawnNewDart();
     }
 
     void Update()
     {
-        if (dartThrown || currentDart == null || throwsUsed >= maxThrowsPerRound)
-            return;
+        HandleInput();
+    }
+
+    void HandleInput()
+    {
+        if (throwsThisRound >= maxThrowsPerRound) return;
 
         if (Input.GetMouseButtonDown(0))
         {
-            dragStartPos = Input.mousePosition;
-            lastMousePosition = dragStartPos;
-            isDragging = true;
+            Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorld.z = 0;
 
-            currentRb.isKinematic = true;
-            currentDart.transform.position = spawnPoint.position;
-            handSprite.SetActive(true);
+            Collider2D hit = Physics2D.OverlapPoint(mouseWorld);
+            if (hit != null && (hit.transform == handTransform || hit.transform == currentDart))
+            {
+                isDragging = true;
+                dragStartMousePos = mouseWorld;
+                dragStartHandPos = handTransform.position;
+            }
         }
 
         if (isDragging && Input.GetMouseButton(0))
         {
-            Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 5f));
-            handSprite.transform.position = mouseWorldPos;
+            Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorld.z = 0;
 
-            currentDart.transform.position = spawnPoint.position;
+            Vector3 dragOffset = mouseWorld - dragStartMousePos;
 
-            mouseVelocity = ((Vector2)Input.mousePosition - lastMousePosition) / Time.deltaTime;
-            lastMousePosition = Input.mousePosition;
+            // Clamp how far back it can go on the Y axis
+            float maxDragBack = 2.5f;
+            dragOffset.y = Mathf.Clamp(dragOffset.y, -maxDragBack, 0);
+
+            handTransform.position = dragStartHandPos + new Vector3(dragOffset.x, dragOffset.y, 0);
         }
 
-        if (Input.GetMouseButtonUp(0) && isDragging)
+        if (isDragging && Input.GetMouseButtonUp(0))
         {
             isDragging = false;
-            dartThrown = true;
-            throwsUsed++;
+            Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorld.z = 0;
 
-            float pullDistance = Mathf.Clamp((dragStartPos - (Vector2)Input.mousePosition).magnitude, 0f, maxPullDistance);
-            Vector3 throwDirection = mainCamera.transform.forward + mainCamera.transform.up * 0.2f;
-            float force = pullDistance * throwForceMultiplier + mouseVelocity.magnitude * 0.0003f;
+            Vector3 throwDir = (dragStartMousePos - mouseWorld).normalized;
+            float dragDistance = Vector3.Distance(dragStartMousePos, mouseWorld);
 
-            currentRb.isKinematic = false;
-            currentRb.AddForce(throwDirection.normalized * force, ForceMode.Impulse);
+            ThrowDart(throwDir, dragDistance);
+            throwsThisRound++;
+            OnDartThrown?.Invoke();
 
-            handSprite.SetActive(false);
+            StartCoroutine(ResetHandPosition());
 
-            Invoke(nameof(SpawnNewDart), 1.0f); // delay to simulate flight time
+            if (throwsThisRound < maxThrowsPerRound)
+            {
+                SpawnNewDart();
+            }
+        }
+    }
 
-            // Optional: notify RoundManager
-            // FindObjectOfType<RoundManager>()?.OnDartThrown(throwsUsed);
+    void ThrowDart(Vector3 direction, float strength)
+    {
+        if (currentDart == null) return;
+
+        Rigidbody rb = currentDart.GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+        rb.useGravity = true;
+
+        // Manual override: strong upward + forward arc
+        Vector3 throwDirection = new Vector3(direction.x * 0.5f, 1.5f, 2f).normalized;
+
+        // Apply a high enough force for visible arc
+        float power = strength * throwForceMultiplier;
+        Vector3 throwVelocity = throwDirection * power;
+
+        rb.linearVelocity = throwVelocity;
+
+        currentDart.parent = null;
+        currentDart = null;
+
+        Debug.DrawRay(rb.position, throwVelocity, Color.red, 2f); // visualize
+    }
+
+    IEnumerator ResetHandPosition()
+    {
+        Vector3 startPos = handTransform.position;
+        Vector3 targetPos = initialHandPosition;
+        float t = 0;
+
+        while (t < 1)
+        {
+            t += Time.deltaTime * 5f;
+            handTransform.position = Vector3.Lerp(startPos, targetPos, t);
+            yield return null;
         }
     }
 
     void SpawnNewDart()
     {
-        if (throwsUsed >= maxThrowsPerRound)
-            return;
+        Transform dart = Instantiate(dartPrefab, dartHoldPoint.position, Quaternion.identity);
+        dart.SetParent(dartHoldPoint);
+        dart.localPosition = Vector3.zero;
 
-        GameObject newDart = Instantiate(dartPrefab, spawnPoint.position, Quaternion.identity);
-        currentDart = newDart;
-        currentRb = newDart.GetComponent<Rigidbody>();
-        currentRb.isKinematic = true;
-        dartThrown = false;
+        Rigidbody rb = dart.GetComponent<Rigidbody>();
+        rb.isKinematic = true;
+        rb.useGravity = false; 
+
+        currentDart = dart;
     }
-
-    public int GetThrowsUsed() => throwsUsed;
 
     public void ResetThrows()
     {
-        throwsUsed = 0;
-        Destroy(currentDart);
-        SpawnNewDart();
+        throwsThisRound = 0;
     }
 }

@@ -50,14 +50,10 @@
   <ItemGroup>
     <Compile Include="Assets/Scripts/MonsterController.cs" />
     <Compile Include="Assets/Scripts/MonsterManager.cs" />
-    <Compile Include="Assets/Scripts/ScoreManager.cs" />
-    <Compile Include="Assets/Scripts/UIManager.cs" />
     <Compile Include="Assets/Scripts/DartThrowController.cs" />
-    <Compile Include="Assets/Scripts/Hand.cs" />
-    <Compile Include="Assets/Scripts/RoundManager.cs" />
     <Compile Include="Assets/TutorialInfo/Scripts/Readme.cs" />
     <Compile Include="Assets/Scripts/DartboardZone.cs" />
-    <Compile Include="Assets/Scripts/DartCollisionHandler.cs" />
+    <Compile Include="Assets/Scripts/GameManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets/TextMesh Pro/Shaders/TMPro.cginc" />
@@ -1231,6 +1227,10 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.State">
       <HintPath>Library/ScriptAssemblies/Unity.VisualScripting.State.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.AI.Navigation.Editor.ConversionSystem">

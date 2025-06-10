@@ -1,8 +1,24 @@
 using UnityEngine;
 
+public enum ZoneType { Single, Double, Triple, Bullseye }
+
 public class DartboardZone : MonoBehaviour
 {
-    [Header("Dartboard Zone Settings")]
-    public int baseScore = 20;
-    public int multiplier = 1; 
+    public int baseScore = 1;
+    public ZoneType zoneType = ZoneType.Single;
+
+    public int GetScore()
+    {
+        switch(zoneType)
+        {
+            case ZoneType.Double:
+                return baseScore * 2;
+            case ZoneType.Triple:
+                return baseScore * 3;
+            case ZoneType.Bullseye:
+                return 50; // bullseye fixed score
+            default:
+                return baseScore;
+        }
+    }
 }

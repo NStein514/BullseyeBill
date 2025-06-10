@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638843126440000000
-    m_Hash: 1827850211
+      ticks: 638851087940000000
+    m_Hash: 141446747
   m_LockFileStatus:
     m_FilePath: /Users/Nathaniel/Documents/BullseyeBill/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638843126680000000
-    m_Hash: 3267230474
+      ticks: 638851087940000000
+    m_Hash: 2283403376
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
@@ -22,6 +22,85 @@ m_LocalPackages:
 m_ProjectPath: /Users/Nathaniel/Documents/BullseyeBill/Packages
 m_EditorVersion: 6000.0.50f1 (f1ef1dca8bff)
 m_ResolvedPackages:
+- packageId: com.unity.2d.sprite@1.0.0
+  testable: 0
+  isDirectDependency: 1
+  version: 1.0.0
+  source: 2
+  resolvedPath: /Users/Nathaniel/Documents/BullseyeBill/Library/PackageCache/com.unity.2d.sprite@4aad6b082da2
+  assetPath: Packages/com.unity.2d.sprite
+  name: com.unity.2d.sprite
+  displayName: 2D Sprite
+  author:
+    name: 
+    email: 
+    url: 
+  category: 2D
+  type: 
+  description: Use Unity Sprite Editor Window to create and edit Sprite asset properties
+    like pivot, borders and Physics shape
+  errors: []
+  versions:
+    all:
+    - 1.0.0
+    compatible:
+    - 1.0.0
+    recommended: 1.0.0
+    deprecated: []
+  dependencies: []
+  resolvedDependencies: []
+  keywords:
+  - 2d
+  - sprite
+  - sprite editor window
+  registry:
+    id: main
+    name: 
+    url: https://packages.unity.com
+    scopes: []
+    isDefault: 1
+    capabilities: 7
+    configSource: 0
+    compliance:
+      status: 0
+      violations: []
+  hideInEditor: 1
+  entitlements:
+    licensingModel: 0
+  isAssetStorePackage: 0
+  datePublishedTicks: 0
+  documentationUrl: 
+  hasRepository: 0
+  repository:
+    type: 
+    url: 
+    revision: 
+    path: 
+  unityLifecycle:
+    version: 1.0.0
+    nextVersion: 
+    recommendedVersion: 
+    isDeprecated: 0
+    deprecationMessage: 
+  isDeprecated: 0
+  deprecationMessage: 
+  git:
+    hash: 
+    revision: 
+  upmReserved: 
+  assetStore:
+    productId: 
+  fingerprint: 4aad6b082da2d9cf347ba4ab9af26480c8aceaa2
+  editorCompatibility:
+    compatibilityLevel: 0
+    minimumPackageVersion: 1.0.0
+    minimumUnityVersion: 2019.2.0a1
+  compliance:
+    status: 0
+    violation:
+      scopePatternExpression: 
+      message: 
+      readMoreLink: 
 - packageId: com.unity.ai.navigation@2.0.7
   testable: 0
   isDirectDependency: 1
@@ -107,7 +186,7 @@ m_ResolvedPackages:
       violations: []
   hideInEditor: 1
   entitlements:
-    licensingModel: 0
+    licensingModel: 1
   isAssetStorePackage: 0
   datePublishedTicks: 638797994194330000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.ai.navigation@2.0/manual/index.html
@@ -280,7 +359,7 @@ m_ResolvedPackages:
       violations: []
   hideInEditor: 1
   entitlements:
-    licensingModel: 0
+    licensingModel: 1
   isAssetStorePackage: 0
   datePublishedTicks: 638822079721750000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.collab-proxy@2.8/manual/index.html
@@ -408,7 +487,7 @@ m_ResolvedPackages:
       violations: []
   hideInEditor: 1
   entitlements:
-    licensingModel: 0
+    licensingModel: 1
   isAssetStorePackage: 0
   datePublishedTicks: 638799562419060000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.ide.rider@3.0/manual/index.html
@@ -520,7 +599,7 @@ m_ResolvedPackages:
       violations: []
   hideInEditor: 1
   entitlements:
-    licensingModel: 0
+    licensingModel: 1
   isAssetStorePackage: 0
   datePublishedTicks: 638786696173840000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.ide.visualstudio@2.0/manual/index.html
@@ -674,7 +753,7 @@ m_ResolvedPackages:
       violations: []
   hideInEditor: 1
   entitlements:
-    licensingModel: 0
+    licensingModel: 1
   isAssetStorePackage: 0
   datePublishedTicks: 638780752796560000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.inputsystem@1.14/manual/index.html
@@ -912,12 +991,12 @@ m_ResolvedPackages:
     version: 1.0.0
   - name: com.unity.collections
     version: 2.5.1
-  - name: com.unity.nuget.mono-cecil
-    version: 1.11.4
   - name: com.unity.test-framework
     version: 1.5.1
   - name: com.unity.ext.nunit
     version: 2.0.5
+  - name: com.unity.nuget.mono-cecil
+    version: 1.11.4
   - name: com.unity.test-framework.performance
     version: 3.1.0
   - name: com.unity.modules.physics
@@ -1148,7 +1227,7 @@ m_ResolvedPackages:
     email: 
     url: 
   category: 
-  type: 
+  type: assets
   description: Use Unity Timeline to create cinematic content, game-play sequences,
     audio sequences, and complex particle effects.
   errors: []
@@ -1248,18 +1327,18 @@ m_ResolvedPackages:
     recommended: 1.8.8
     deprecated: []
   dependencies:
+  - name: com.unity.modules.audio
+    version: 1.0.0
   - name: com.unity.modules.director
     version: 1.0.0
   - name: com.unity.modules.animation
     version: 1.0.0
-  - name: com.unity.modules.audio
-    version: 1.0.0
   - name: com.unity.modules.particlesystem
     version: 1.0.0
   resolvedDependencies:
-  - name: com.unity.modules.director
-    version: 1.0.0
   - name: com.unity.modules.audio
+    version: 1.0.0
+  - name: com.unity.modules.director
     version: 1.0.0
   - name: com.unity.modules.animation
     version: 1.0.0
@@ -1284,7 +1363,7 @@ m_ResolvedPackages:
       violations: []
   hideInEditor: 1
   entitlements:
-    licensingModel: 0
+    licensingModel: 1
   isAssetStorePackage: 0
   datePublishedTicks: 638524833900000000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.timeline@1.8/manual/index.html
@@ -1361,7 +1440,10 @@ m_ResolvedPackages:
     - 3.0.0-exp.3
     - 3.0.0-exp.4
     recommended: 2.0.0
-    deprecated: []
+    deprecated:
+    - 3.0.0-exp.1
+    - 3.0.0-exp.3
+    - 3.0.0-exp.4
   dependencies:
   - name: com.unity.modules.ui
     version: 1.0.0
@@ -1518,7 +1600,7 @@ m_ResolvedPackages:
       violations: []
   hideInEditor: 1
   entitlements:
-    licensingModel: 0
+    licensingModel: 1
   isAssetStorePackage: 0
   datePublishedTicks: 638769546699650000
   documentationUrl: 
@@ -4544,12 +4626,12 @@ m_ResolvedPackages:
     version: 1.0.0
   - name: com.unity.collections
     version: 2.5.1
-  - name: com.unity.nuget.mono-cecil
-    version: 1.11.4
   - name: com.unity.test-framework
     version: 1.5.1
   - name: com.unity.ext.nunit
     version: 2.0.5
+  - name: com.unity.nuget.mono-cecil
+    version: 1.11.4
   - name: com.unity.test-framework.performance
     version: 3.1.0
   - name: com.unity.modules.physics
@@ -4754,12 +4836,12 @@ m_ResolvedPackages:
     version: 1.0.0
   - name: com.unity.collections
     version: 2.5.1
-  - name: com.unity.nuget.mono-cecil
-    version: 1.11.4
   - name: com.unity.test-framework
     version: 1.5.1
   - name: com.unity.ext.nunit
     version: 2.0.5
+  - name: com.unity.nuget.mono-cecil
+    version: 1.11.4
   - name: com.unity.test-framework.performance
     version: 3.1.0
   - name: com.unity.modules.physics
@@ -4863,12 +4945,12 @@ m_ResolvedPackages:
     version: 1.0.0
   - name: com.unity.collections
     version: 2.5.1
-  - name: com.unity.nuget.mono-cecil
-    version: 1.11.4
   - name: com.unity.test-framework
     version: 1.5.1
   - name: com.unity.ext.nunit
     version: 2.0.5
+  - name: com.unity.nuget.mono-cecil
+    version: 1.11.4
   - name: com.unity.test-framework.performance
     version: 3.1.0
   - name: com.unity.modules.physics
@@ -5178,9 +5260,11 @@ m_ResolvedPackages:
     - 1.8.19
     - 1.8.20
     - 1.8.21
+    - 1.8.22
     compatible:
     - 1.8.21
-    recommended: 1.8.21
+    - 1.8.22
+    recommended: 1.8.22
     deprecated: []
   dependencies:
   - name: com.unity.mathematics
@@ -5206,7 +5290,7 @@ m_ResolvedPackages:
       violations: []
   hideInEditor: 1
   entitlements:
-    licensingModel: 0
+    licensingModel: 1
   isAssetStorePackage: 0
   datePublishedTicks: 638797336625580000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.burst@1.8/manual/index.html
@@ -5278,7 +5362,7 @@ m_ResolvedPackages:
     email: 
     url: 
   category: 
-  type: 
+  type: assets
   description: Unity's C# SIMD math library providing vector types and math functions
     with a shader like syntax.
   errors: []
@@ -5324,7 +5408,7 @@ m_ResolvedPackages:
       violations: []
   hideInEditor: 1
   entitlements:
-    licensingModel: 0
+    licensingModel: 1
   isAssetStorePackage: 0
   datePublishedTicks: 638409134840000000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.mathematics@1.3/manual/index.html
@@ -5468,10 +5552,10 @@ m_ResolvedPackages:
   dependencies:
   - name: com.unity.burst
     version: 1.8.17
-  - name: com.unity.nuget.mono-cecil
-    version: 1.11.4
   - name: com.unity.test-framework
     version: 1.4.5
+  - name: com.unity.nuget.mono-cecil
+    version: 1.11.4
   - name: com.unity.test-framework.performance
     version: 3.0.3
   resolvedDependencies:
@@ -5481,14 +5565,14 @@ m_ResolvedPackages:
     version: 1.3.2
   - name: com.unity.modules.jsonserialize
     version: 1.0.0
-  - name: com.unity.nuget.mono-cecil
-    version: 1.11.4
   - name: com.unity.test-framework
     version: 1.5.1
   - name: com.unity.ext.nunit
     version: 2.0.5
   - name: com.unity.modules.imgui
     version: 1.0.0
+  - name: com.unity.nuget.mono-cecil
+    version: 1.11.4
   - name: com.unity.test-framework.performance
     version: 3.1.0
   keywords:
@@ -5508,7 +5592,7 @@ m_ResolvedPackages:
       violations: []
   hideInEditor: 1
   entitlements:
-    licensingModel: 0
+    licensingModel: 1
   isAssetStorePackage: 0
   datePublishedTicks: 638621282722800000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.collections@2.5/manual/index.html
@@ -5587,14 +5671,14 @@ m_ResolvedPackages:
     version: 1.3.2
   - name: com.unity.modules.jsonserialize
     version: 1.0.0
-  - name: com.unity.nuget.mono-cecil
-    version: 1.11.4
   - name: com.unity.test-framework
     version: 1.5.1
   - name: com.unity.ext.nunit
     version: 2.0.5
   - name: com.unity.modules.imgui
     version: 1.0.0
+  - name: com.unity.nuget.mono-cecil
+    version: 1.11.4
   - name: com.unity.test-framework.performance
     version: 3.1.0
   - name: com.unity.modules.terrain
@@ -5707,7 +5791,7 @@ m_ResolvedPackages:
       violations: []
   hideInEditor: 1
   entitlements:
-    licensingModel: 0
+    licensingModel: 1
   isAssetStorePackage: 0
   datePublishedTicks: 637852971930000000
   documentationUrl: 
@@ -5848,7 +5932,7 @@ m_ResolvedPackages:
       violations: []
   hideInEditor: 1
   entitlements:
-    licensingModel: 0
+    licensingModel: 1
   isAssetStorePackage: 0
   datePublishedTicks: 638792643567670000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.test-framework.performance@3.1/manual/index.html

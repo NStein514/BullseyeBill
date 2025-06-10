@@ -374,6 +374,7 @@
 -r:"Library/PackageCache/com.unity.nuget.mono-cecil@d6f9955a5d5f/Mono.Cecil.dll"
 -r:"Library/PackageCache/com.unity.visualscripting@7dcdc439b230/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll"
 -r:"Library/Bee/artifacts/200b0aE.dag/PPv2URPConverters.ref.dll"
+-r:"Library/Bee/artifacts/200b0aE.dag/Unity.2D.Sprite.Editor.ref.dll"
 -r:"Library/Bee/artifacts/200b0aE.dag/Unity.AI.Navigation.Editor.ConversionSystem.ref.dll"
 -r:"Library/Bee/artifacts/200b0aE.dag/Unity.AI.Navigation.Editor.ref.dll"
 -r:"Library/Bee/artifacts/200b0aE.dag/Unity.AI.Navigation.ref.dll"
@@ -426,14 +427,10 @@
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.50f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.50f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
 "Assets/Scripts/DartboardZone.cs"
-"Assets/Scripts/DartCollisionHandler.cs"
 "Assets/Scripts/DartThrowController.cs"
-"Assets/Scripts/Hand.cs"
+"Assets/Scripts/GameManager.cs"
 "Assets/Scripts/MonsterController.cs"
 "Assets/Scripts/MonsterManager.cs"
-"Assets/Scripts/RoundManager.cs"
-"Assets/Scripts/ScoreManager.cs"
-"Assets/Scripts/UIManager.cs"
 "Assets/TutorialInfo/Scripts/Readme.cs"
 -langversion:9.0
 /deterministic
