@@ -1,9 +1,11 @@
 using UnityEngine;
 using System.Collections;
 using System.Reflection;
+using System.Collections.Generic;
 
 public class DartThrowController : MonoBehaviour
 {
+    private List<Transform> activeThrownDarts = new List<Transform>();
     public Transform handTransform;         // The hand sprite
     public Transform dartPrefab;            // Prefab of the dart to throw
     public Transform dartHoldPoint;         // Where dart sits in hand
@@ -18,7 +20,7 @@ public class DartThrowController : MonoBehaviour
 
     private Vector3 initialHandPosition;
     private Vector3 dragStartMousePos;
-    private Vector3 dragStartHandPos; 
+    private Vector3 dragStartHandPos;
 
     public delegate void ThrowEvent();
     public event ThrowEvent OnDartThrown;
@@ -32,6 +34,7 @@ public class DartThrowController : MonoBehaviour
     void Update()
     {
         HandleInput();
+        UpdateThrownDartScales();
     }
 
     void HandleInput()
@@ -96,6 +99,8 @@ public class DartThrowController : MonoBehaviour
         rb.isKinematic = false;
         rb.useGravity = true;
 
+        rb.constraints = RigidbodyConstraints.FreezeRotation;
+
         // Manual override: strong upward + forward arc
         Vector3 throwDirection = new Vector3(direction.x * 0.5f, 1.5f, 2f).normalized;
 
@@ -104,6 +109,8 @@ public class DartThrowController : MonoBehaviour
         Vector3 throwVelocity = throwDirection * power;
 
         rb.linearVelocity = throwVelocity;
+
+        activeThrownDarts.Add(currentDart); 
 
         currentDart.parent = null;
         currentDart = null;
@@ -133,7 +140,7 @@ public class DartThrowController : MonoBehaviour
 
         Rigidbody rb = dart.GetComponent<Rigidbody>();
         rb.isKinematic = true;
-        rb.useGravity = false; 
+        rb.useGravity = false;
 
         currentDart = dart;
     }
@@ -141,5 +148,30 @@ public class DartThrowController : MonoBehaviour
     public void ResetThrows()
     {
         throwsThisRound = 0;
+    }
+
+    void UpdateThrownDartScales()
+    {
+        for (int i = activeThrownDarts.Count - 1; i >= 0; i--)
+        {
+            Transform dart = activeThrownDarts[i];
+
+            if (dart == null)
+            {
+                activeThrownDarts.RemoveAt(i);
+                continue;
+            }
+
+            float distance = Vector3.Distance(initialHandPosition, dart.position);
+
+            // Clamp the distance for visual scale bounds 
+            float minScale = 0.07f; 
+            float maxScale = 0.3f; 
+            float maxDistance = 25f;
+
+            float t = Mathf.Clamp01(distance / maxDistance);
+            float scale = Mathf.Lerp(maxScale, minScale, t);
+            dart.localScale = new Vector3(scale, scale, scale); 
+        }
     }
 }
