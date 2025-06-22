@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEditor.IMGUI.Controls;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,13 +20,19 @@ public class GameManager : MonoBehaviour
     private float elapsedTime = 0f;
 
     private bool roundActive = true;
+    private bool levelCleared = false;
 
     void Start()
     {
         gameOverPanel.SetActive(false);
-        dartThrowController.OnDartThrown += OnDartThrown;
-        monsterManager.OnMonstersDefeated += OnLevelCleared;
-        UpdateUI();
+
+        if (dartThrowController != null)
+            dartThrowController.OnDartThrown += OnDartThrown;
+
+        if (monsterManager != null)
+            monsterManager.OnAllMonstersDefeated += OnLevelCleared;
+
+        StartLevel();
     }
 
     void Update()
@@ -58,39 +65,54 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);
 
-        monsterManager.MoveMonsters();
+        if (monsterManager != null)
+            monsterManager.MoveOrAttackMonsters(); 
 
         yield return new WaitForSeconds(1f);
 
-        monsterManager.CheckMonstersDefeated();
-
-        if (roundActive == false)
+        if (!levelCleared)
         {
             StartNewRound();
         }
+    }
+
+    void StartLevel()
+    {
+        levelCleared = false;
+        levelText.text = $"{level}";
+
+        if (monsterManager != null)
+            monsterManager.SpawnMonsters(level);
+
+        StartNewRound(); 
     }
 
     void StartNewRound()
     {
         dartThrowController.ResetThrows();
         roundActive = true;
-        UpdateUI();
+        UpdateUI(); 
     }
 
     void OnLevelCleared()
     {
+        levelCleared = true; 
         level++;
-        levelText.text = "Level: " + level;
 
-        // TODO: Load new monster pattern for next level
+        StartCoroutine(AdvanceToNextLevel()); 
+    }
 
-        StartNewRound();
+    IEnumerator AdvanceToNextLevel()
+    {
+        roundActive = false;
+        yield return new WaitForSeconds(1f);
+        StartLevel(); 
     }
 
     void UpdateUI()
     {
         throwCountText.text = $"Throws: {totalThrows}";
-        levelText.text = "Level: " + level;
+        levelText.text = $"{level}";
     }
 
     public void GameOver()

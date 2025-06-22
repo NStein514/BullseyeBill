@@ -3,87 +3,98 @@ using System.Collections.Generic;
 
 public class MonsterManager : MonoBehaviour
 {
-    public GameObject monsterPrefab;
+    [Header("Monster Prefabs (1 through 6)")]
+    public List<GameObject> monsterPrefabs;
 
-    [System.Serializable]
-    public struct SectionSpawnPoint
+    [Header("Spawn Points by Zone")]
+    public List<Transform> bullseyePoints;
+    public List<Transform> ring1Points;
+    public List<Transform> triangle2Points;
+    public List<Transform> ring3Points;
+    public List<Transform> triangle4Points;
+    public List<Transform> ring5Points;
+
+    [Header("Dartboard Settings")]
+    public Transform dartboardCenter; // Assign in Inspector!
+
+    private MonsterController currentMonster;
+
+    public delegate void AllMonstersDefeatedEvent();
+    public event AllMonstersDefeatedEvent OnAllMonstersDefeated;
+
+    public void SpawnMonsters(int level)
     {
-        public DartboardSections section;
-        public Transform spawnPoint;
-    }
+        ClearMonster();
 
-    public List<SectionSpawnPoint> sectionSpawnPoints;
+        int type = Mathf.Clamp(level, 1, 6);
+        GameObject prefab = monsterPrefabs[type - 1];
+        Transform spawnPoint = GetSpawnPointForType(type);
 
-    private Dictionary<DartboardSections, Transform> spawnPointMap;
-    public List<MonsterController> monsters = new List<MonsterController>();
-
-    public delegate void MonstersDefeatedEvent();
-    public event MonstersDefeatedEvent OnMonstersDefeated;
-
-    void Awake()
-    {
-        spawnPointMap = new Dictionary<DartboardSections, Transform>();
-        foreach (var entry in sectionSpawnPoints)
+        if (spawnPoint == null)
         {
-            spawnPointMap[entry.section] = entry.spawnPoint;
+            Debug.LogWarning("No spawn point found for monster type " + type);
+            return;
+        }
+
+        GameObject monsterObj = Instantiate(prefab, spawnPoint.position, Quaternion.identity);
+        currentMonster = monsterObj.GetComponent<MonsterController>();
+
+        if (currentMonster != null)
+        {
+            bool rotateToCenter = (type >= 3 && type <= 6); // Triangle/outer ring monsters
+            currentMonster.Setup(spawnPoint, dartboardCenter, rotateToCenter);
+            currentMonster.SetHealth(1); // One-hit KO
+            currentMonster.OnMonsterDefeated += HandleMonsterDefeated;
         }
     }
 
-    public void SpawnMonsters(List<DartboardSections> sectionsToSpawn)
+    Transform GetSpawnPointForType(int type)
     {
-        ClearMonsters();
-
-        foreach (DartboardSections section in sectionsToSpawn)
+        switch (type)
         {
-            if (spawnPointMap.TryGetValue(section, out Transform spawnPoint))
-            {
-                GameObject monsterGO = Instantiate(monsterPrefab, spawnPoint.position, spawnPoint.rotation);
-                MonsterController monster = monsterGO.GetComponent<MonsterController>();
-
-                if (monster != null)
-                {
-                    monster.Setup(section, spawnPoint);
-                    monsters.Add(monster);
-                }
-            }
-            else
-            {
-                Debug.LogWarning($"No spawn point defined for section: {section}");
-            }
+            case 1: return GetRandomPoint(bullseyePoints);
+            case 2: return GetRandomPoint(ring1Points);
+            case 3: return GetRandomPoint(triangle2Points);
+            case 4: return GetRandomPoint(ring3Points);
+            case 5: return GetRandomPoint(triangle4Points);
+            case 6: return GetRandomPoint(ring5Points);
+            default: return null;
         }
     }
 
-    public void MoveMonsters()
+    Transform GetRandomPoint(List<Transform> points)
     {
-        foreach (var monster in monsters)
+        if (points == null || points.Count == 0)
+            return null;
+
+        return points[Random.Range(0, points.Count)];
+    }
+
+    public void MoveOrAttackMonsters()
+    {
+        if (currentMonster != null)
         {
-            if (monster != null)
-            {
-                Animator anim = monster.GetComponent<Animator>();
-                if (anim != null)
-                    anim.SetTrigger("Move");
-            }
+            Animator anim = currentMonster.GetComponent<Animator>();
+            if (anim != null)
+                anim.SetTrigger("Move");
         }
     }
 
-    public void CheckMonstersDefeated()
+    private void HandleMonsterDefeated()
     {
-        monsters.RemoveAll(m => m == null);
+        if (currentMonster != null)
+            currentMonster.OnMonsterDefeated -= HandleMonsterDefeated;
 
-        if (monsters.Count == 0)
-        {
-            OnMonstersDefeated?.Invoke();
-        }
+        currentMonster = null;
+        OnAllMonstersDefeated?.Invoke();
     }
 
-    public void ClearMonsters()
+    private void ClearMonster()
     {
-        foreach (var monster in monsters)
+        if (currentMonster != null)
         {
-            if (monster != null)
-                Destroy(monster.gameObject);
+            Destroy(currentMonster.gameObject);
+            currentMonster = null;
         }
-
-        monsters.Clear();
     }
 }

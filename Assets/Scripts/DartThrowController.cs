@@ -6,10 +6,10 @@ using System.Collections.Generic;
 public class DartThrowController : MonoBehaviour
 {
     private List<Transform> activeThrownDarts = new List<Transform>();
-    public Transform handTransform;         // The hand sprite
-    public Transform dartPrefab;            // Prefab of the dart to throw
-    public Transform dartHoldPoint;         // Where dart sits in hand
-    public float throwForceMultiplier = 10f;
+    public Transform handTransform;
+    public Transform dartPrefab;
+    public Transform dartHoldPoint;
+    public float throwForceMultiplier = 8f;
     public int maxThrowsPerRound = 3;
 
     public int throwsThisRound = 0;
@@ -52,6 +52,14 @@ public class DartThrowController : MonoBehaviour
                 isDragging = true;
                 dragStartMousePos = mouseWorld;
                 dragStartHandPos = handTransform.position;
+
+                // Make sure dart is held tightly
+                if (currentDart != null)
+                {
+                    currentDart.SetParent(dartHoldPoint);
+                    currentDart.localPosition = Vector3.zero;
+                    currentDart.localRotation = Quaternion.identity;
+                }
             }
         }
 
@@ -62,32 +70,42 @@ public class DartThrowController : MonoBehaviour
 
             Vector3 dragOffset = mouseWorld - dragStartMousePos;
 
-            // Clamp how far back it can go on the Y axis
-            float maxDragBack = 2.5f;
-            dragOffset.y = Mathf.Clamp(dragOffset.y, -maxDragBack, 0);
+            float maxVisualDrag = 2.5f;
+            float clampedY = dragOffset.y < 0 ? Mathf.Clamp(dragOffset.y, -maxVisualDrag, 0) : dragOffset.y;
+            Vector3 visualOffset = new Vector3(dragOffset.x, clampedY, 0);
 
-            handTransform.position = dragStartHandPos + new Vector3(dragOffset.x, dragOffset.y, 0);
+            handTransform.position = dragStartHandPos + visualOffset;
+
+            // Keep dart locked in the hand while dragging
+            if (currentDart != null)
+            {
+                currentDart.position = dartHoldPoint.position;
+                currentDart.rotation = dartHoldPoint.rotation;
+            }
         }
 
         if (isDragging && Input.GetMouseButtonUp(0))
         {
             isDragging = false;
-            Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mouseWorld.z = 0;
+            Vector3 mouseWorldEnd = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorldEnd.z = 0;
 
-            Vector3 throwDir = (dragStartMousePos - mouseWorld).normalized;
-            float dragDistance = Vector3.Distance(dragStartMousePos, mouseWorld);
+            Vector3 dragVector = dragStartMousePos - mouseWorldEnd;
 
-            ThrowDart(throwDir, dragDistance);
+            // Convert to throw direction and strength
+            float dragDistance = (dragStartMousePos - mouseWorldEnd).magnitude;
+            float strength = Mathf.Clamp(dragDistance, 0.5f, 2f);
+            Vector3 throwDir = dragVector.normalized;
+
+            ThrowDart(throwDir, strength);
+
             throwsThisRound++;
             OnDartThrown?.Invoke();
 
             StartCoroutine(ResetHandPosition());
 
             if (throwsThisRound < maxThrowsPerRound)
-            {
                 SpawnNewDart();
-            }
         }
     }
 
@@ -99,23 +117,21 @@ public class DartThrowController : MonoBehaviour
         rb.isKinematic = false;
         rb.useGravity = true;
 
-        rb.constraints = RigidbodyConstraints.FreezeRotation;
+        // Optionally lock dart rotation on X/Y if you want it to face forward consistently
+        rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
 
-        // Manual override: strong upward + forward arc
-        Vector3 throwDirection = new Vector3(direction.x * 0.5f, 1.5f, 2f).normalized;
+        // Define a natural arc: slightly upward and forward
+        Vector3 throwDirection = new Vector3(direction.x * 0.5f, 1.0f, 2f).normalized;
 
-        // Apply a high enough force for visible arc
         float power = strength * throwForceMultiplier;
-        Vector3 throwVelocity = throwDirection * power;
+        rb.linearVelocity = throwDirection * power;
 
-        rb.linearVelocity = throwVelocity;
-
-        activeThrownDarts.Add(currentDart); 
-
+        // Detach dart
         currentDart.parent = null;
+        activeThrownDarts.Add(currentDart);
         currentDart = null;
 
-        Debug.DrawRay(rb.position, throwVelocity, Color.red, 2f); // visualize
+        Debug.DrawRay(rb.position, throwDirection * power, Color.green, 2f);
     }
 
     IEnumerator ResetHandPosition()
