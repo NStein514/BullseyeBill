@@ -10,8 +10,7 @@ public class MenuManager : MonoBehaviour
 
     public void OpenOptions()
     {
-        // Placeholder - until customizations are set up
-        Debug.Log("Options clicked.");
+        SceneManager.LoadScene("OptionsMenu"); 
     }
 
     public void ExitGame()

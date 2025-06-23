@@ -52,7 +52,9 @@
     <Compile Include="Assets/Scripts/MonsterManager.cs" />
     <Compile Include="Assets/Scripts/DartThrowController.cs" />
     <Compile Include="Assets/TutorialInfo/Scripts/Readme.cs" />
+    <Compile Include="Assets/Scripts/OptionsMenuUI.cs" />
     <Compile Include="Assets/Scripts/DartCollisionHandler.cs" />
+    <Compile Include="Assets/Scripts/CustomizationManager.cs" />
     <Compile Include="Assets/Scripts/MenuManager.cs" />
     <Compile Include="Assets/Scripts/GameManager.cs" />
   </ItemGroup>

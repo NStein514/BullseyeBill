@@ -9,7 +9,10 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 8737d2f1e2194452889a8d6d7718c52b
   - enabled: 1
-    path: Assets/BullseyeBill.unity
+    path: Assets/Scenes/OptionsMenu.unity
+    guid: 5812bb7afcf2e4e3493759be08a4e5c8
+  - enabled: 1
+    path: Assets/Scenes/BullseyeBill.unity
     guid: 4500fe5c3ca6d4ed189d32228cd282fd
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}

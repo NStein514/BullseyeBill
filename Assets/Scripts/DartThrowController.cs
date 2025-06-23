@@ -7,6 +7,15 @@ public class DartThrowController : MonoBehaviour
 {
     private List<Transform> activeThrownDarts = new List<Transform>();
     public Transform handTransform;
+    [System.Serializable]
+    public struct HandSpriteSet
+    {
+        public Sprite idle;
+        public Sprite pulledBack;
+        public Sprite throwing; 
+    }
+    public HandSpriteSet[] handSpriteSets;
+    public Sprite[] dartSprites; 
     public Transform dartPrefab;
     public Transform dartHoldPoint;
     public float throwForceMultiplier = 8f;
@@ -14,9 +23,10 @@ public class DartThrowController : MonoBehaviour
 
     public int throwsThisRound = 0;
     private bool isDragging = false;
-    private Vector3 dragStartPos;
-    private Vector3 dragEndPos;
     private Transform currentDart;
+
+    private float dragStartTime;
+    private float dragEndTime; 
 
     private Vector3 initialHandPosition;
     private Vector3 dragStartMousePos;
@@ -27,6 +37,8 @@ public class DartThrowController : MonoBehaviour
 
     void Start()
     {
+        CustomizationManager.LoadSelections();
+        SetHandSprite(handSpriteSets[CustomizationManager.SelectedHandIndex].idle);
         initialHandPosition = handTransform.position;
         SpawnNewDart();
     }
@@ -50,8 +62,11 @@ public class DartThrowController : MonoBehaviour
             if (hit != null && (hit.transform == handTransform || hit.transform == currentDart))
             {
                 isDragging = true;
+                dragStartTime = Time.time;
                 dragStartMousePos = mouseWorld;
                 dragStartHandPos = handTransform.position;
+
+                SetHandSprite(handSpriteSets[CustomizationManager.SelectedHandIndex].pulledBack);
 
                 // Make sure dart is held tightly
                 if (currentDart != null)
@@ -90,14 +105,20 @@ public class DartThrowController : MonoBehaviour
             Vector3 mouseWorldEnd = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldEnd.z = 0;
 
-            Vector3 dragVector = dragStartMousePos - mouseWorldEnd;
-
             // Convert to throw direction and strength
             float dragDistance = (dragStartMousePos - mouseWorldEnd).magnitude;
-            float strength = Mathf.Clamp(dragDistance, 0.5f, 2f);
-            Vector3 throwDir = dragVector.normalized;
 
-            ThrowDart(throwDir, strength);
+            dragEndTime = Time.time;
+
+            Vector3 dragVector = (mouseWorldEnd - dragStartMousePos);
+            float dragDuration = Mathf.Max(Time.time - dragStartTime, 0.01f);
+            float flickSpeed = dragVector.magnitude / dragDuration;
+            float strength = Mathf.Clamp(flickSpeed, 5f, 25f); // adjust as needed
+
+            ThrowDart(dragVector, strength);
+
+            SetHandSprite(handSpriteSets[CustomizationManager.SelectedHandIndex].throwing);
+            Invoke(nameof(ResetHandSpriteToIdle), 1f); // Go back to idle sprite after 1 sec
 
             throwsThisRound++;
             OnDartThrown?.Invoke();
@@ -109,30 +130,30 @@ public class DartThrowController : MonoBehaviour
         }
     }
 
-    void ThrowDart(Vector3 direction, float strength)
+    void ThrowDart(Vector3 dragVector, float strength)
     {
         if (currentDart == null) return;
 
         Rigidbody rb = currentDart.GetComponent<Rigidbody>();
         rb.isKinematic = false;
         rb.useGravity = true;
+        rb.angularVelocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
 
-        // Optionally lock dart rotation on X/Y if you want it to face forward consistently
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
 
-        // Define a natural arc: slightly upward and forward
-        Vector3 throwDirection = new Vector3(direction.x * 0.5f, 1.0f, 2f).normalized;
+        Vector3 throwDirection = new Vector3(dragVector.x, dragVector.y, 1f).normalized;
 
         float power = strength * throwForceMultiplier;
         rb.linearVelocity = throwDirection * power;
 
-        // Detach dart
         currentDart.parent = null;
         activeThrownDarts.Add(currentDart);
         currentDart = null;
 
-        Debug.DrawRay(rb.position, throwDirection * power, Color.green, 2f);
+        Debug.DrawRay(rb.position, throwDirection * power, Color.red, 2f); 
     }
+
 
     IEnumerator ResetHandPosition()
     {
@@ -148,15 +169,30 @@ public class DartThrowController : MonoBehaviour
         }
     }
 
+    void SetHandSprite(Sprite sprite)
+    {
+        handTransform.GetComponent<SpriteRenderer>().sprite = sprite;
+    }
+
+    void ResetHandSpriteToIdle()
+    {
+        SetHandSprite(handSpriteSets[CustomizationManager.SelectedHandIndex].idle);
+    }
+
     void SpawnNewDart()
     {
+        if (dartPrefab == null || dartHoldPoint == null) return;
+
         Transform dart = Instantiate(dartPrefab, dartHoldPoint.position, Quaternion.identity);
-        dart.SetParent(dartHoldPoint);
-        dart.localPosition = Vector3.zero;
+        dart.SetParent(dartHoldPoint, worldPositionStays: false);
+        dart.localRotation = Quaternion.identity;
 
         Rigidbody rb = dart.GetComponent<Rigidbody>();
         rb.isKinematic = true;
         rb.useGravity = false;
+
+        SpriteRenderer sr = dart.GetComponentInChildren<SpriteRenderer>();
+        sr.sprite = dartSprites[CustomizationManager.SelectedDartIndex];
 
         currentDart = dart;
     }
