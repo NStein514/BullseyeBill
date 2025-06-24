@@ -18,6 +18,7 @@ public class MonsterManager : MonoBehaviour
     public Transform dartboardCenter; // Assign in Inspector!
 
     private MonsterController currentMonster;
+    private List<MonsterController> activeMonsters = new List<MonsterController>();
 
     public delegate void AllMonstersDefeatedEvent();
     public event AllMonstersDefeatedEvent OnAllMonstersDefeated;
@@ -41,10 +42,12 @@ public class MonsterManager : MonoBehaviour
 
         if (currentMonster != null)
         {
-            bool rotateToCenter = (type >= 3 && type <= 6); // Triangle/outer ring monsters
+            bool rotateToCenter = (type >= 3 && type <= 6);
             currentMonster.Setup(spawnPoint, dartboardCenter, rotateToCenter);
-            currentMonster.SetHealth(1); // One-hit KO
+            currentMonster.SetHealth(1);
             currentMonster.OnMonsterDefeated += HandleMonsterDefeated;
+
+            activeMonsters.Add(currentMonster); 
         }
     }
 
@@ -80,21 +83,37 @@ public class MonsterManager : MonoBehaviour
         }
     }
 
+    public bool AreAllMonstersDefeated()
+    {
+        return activeMonsters.Count == 0;
+    }
+
     private void HandleMonsterDefeated()
     {
         if (currentMonster != null)
+        {
             currentMonster.OnMonsterDefeated -= HandleMonsterDefeated;
+            activeMonsters.Remove(currentMonster);
+            currentMonster = null;
+        }
 
-        currentMonster = null;
-        OnAllMonstersDefeated?.Invoke();
+        if (activeMonsters.Count == 0)
+        {
+            OnAllMonstersDefeated?.Invoke();
+        }
     }
 
     private void ClearMonster()
     {
-        if (currentMonster != null)
+        foreach (var monster in activeMonsters)
         {
-            Destroy(currentMonster.gameObject);
-            currentMonster = null;
+            if (monster != null)
+            {
+                Destroy(monster.gameObject);
+            }
         }
+
+        activeMonsters.Clear();
+        currentMonster = null;
     }
 }

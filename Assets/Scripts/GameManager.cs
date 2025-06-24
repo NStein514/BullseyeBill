@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public MonsterManager monsterManager;
 
     public Text scoreText;
+    public Text liveScoreText; 
     public Text throwCountText;
     public Text timerText;
     public Text levelText;
@@ -66,13 +67,21 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         if (monsterManager != null)
-            monsterManager.MoveOrAttackMonsters(); 
+            monsterManager.MoveOrAttackMonsters();
 
         yield return new WaitForSeconds(1f);
 
         if (!levelCleared)
         {
-            StartNewRound();
+            // If monsters still alive, player loses
+            if (!monsterManager.AreAllMonstersDefeated())
+            {
+                GameOver();
+            }
+            else
+            {
+                StartNewRound(); // fallback safeguard
+            }
         }
     }
 
@@ -84,35 +93,36 @@ public class GameManager : MonoBehaviour
         if (monsterManager != null)
             monsterManager.SpawnMonsters(level);
 
-        StartNewRound(); 
+        StartNewRound();
     }
 
     void StartNewRound()
     {
         dartThrowController.ResetThrows();
         roundActive = true;
-        UpdateUI(); 
+        UpdateUI();
     }
 
     void OnLevelCleared()
     {
-        levelCleared = true; 
+        levelCleared = true;
         level++;
 
-        StartCoroutine(AdvanceToNextLevel()); 
+        StartCoroutine(AdvanceToNextLevel());
     }
 
     IEnumerator AdvanceToNextLevel()
     {
         roundActive = false;
         yield return new WaitForSeconds(1f);
-        StartLevel(); 
+        StartLevel();
     }
 
     void UpdateUI()
     {
         throwCountText.text = $"Throws: {totalThrows}";
         levelText.text = $"{level}";
+        liveScoreText.text = $"{CalculateScore()}";
     }
 
     public void GameOver()
@@ -127,5 +137,10 @@ public class GameManager : MonoBehaviour
         // Example: score based on time & throws, lower is better
         int score = Mathf.Max(0, (int)(1000 - (elapsedTime * 10 + totalThrows * 5)));
         return score;
+    }
+
+    public void ReplayGame()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("BullseyeBill"); 
     }
 }
