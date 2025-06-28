@@ -50,15 +50,20 @@ public class GameManager : MonoBehaviour
         totalThrows++;
         throwCountText.text = $"Throws: {totalThrows}";
 
-        if (dartThrowController != null)
+        // Check if the monster was defeated right after the throw
+        if (monsterManager != null && monsterManager.AreAllMonstersDefeated())
         {
-            if (dartThrowController.throwsThisRound >= dartThrowController.maxThrowsPerRound)
-            {
-                roundActive = false;
+            levelCleared = true;
+            dartThrowController.ResetThrows();
+            StartCoroutine(AdvanceToNextLevel());
+            return;
+        }
 
-                // After delay, move monsters and start new round
-                StartCoroutine(MonsterTurnAndNextRound());
-            }
+        // If max throws used, proceed with monster action
+        if (dartThrowController != null && dartThrowController.throwsThisRound >= dartThrowController.maxThrowsPerRound)
+        {
+            roundActive = false;
+            StartCoroutine(MonsterTurnAndNextRound());
         }
     }
 
@@ -73,14 +78,13 @@ public class GameManager : MonoBehaviour
 
         if (!levelCleared)
         {
-            // If monsters still alive, player loses
             if (!monsterManager.AreAllMonstersDefeated())
             {
                 GameOver();
             }
             else
             {
-                StartNewRound(); // fallback safeguard
+                OnLevelCleared();
             }
         }
     }
@@ -90,21 +94,17 @@ public class GameManager : MonoBehaviour
         levelCleared = false;
         levelText.text = $"{level}";
 
-        if (monsterManager != null)
-            monsterManager.SpawnMonsters(level);
-
-        StartNewRound();
-    }
-
-    void StartNewRound()
-    {
         dartThrowController.ResetThrows();
+        monsterManager.SpawnMonsters(level);
+        dartThrowController.StartNewRound();
+
         roundActive = true;
-        UpdateUI();
+        UpdateUI(); 
     }
 
     void OnLevelCleared()
     {
+        if (levelCleared) return; // Prevent multiple calls
         levelCleared = true;
         level++;
 
@@ -134,7 +134,6 @@ public class GameManager : MonoBehaviour
 
     int CalculateScore()
     {
-        // Example: score based on time & throws, lower is better
         int score = Mathf.Max(0, (int)(1000 - (elapsedTime * 10 + totalThrows * 5)));
         return score;
     }

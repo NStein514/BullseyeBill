@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 480613704160425294}
   - component: {fileID: 1855727160261829866}
   - component: {fileID: -1057802257074572920}
+  - component: {fileID: -178975723814805236}
   m_Layer: 0
   m_Name: DartPrefab
   m_TagString: Untagged
@@ -108,10 +109,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.47598585
+  m_Radius: 0.6868336
   m_Height: 5.6600003
   m_Direction: 0
-  m_Center: {x: 0, y: 0.06999999, z: -0.025985867}
+  m_Center: {x: 0, y: 0.07000009, z: -0.23683357}
 --- !u!54 &-1057802257074572920
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -135,7 +136,20 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &-178975723814805236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6348856153919397706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caaa106cc193c4fd1bff0a974c931d6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseDamage: 10

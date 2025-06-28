@@ -29,6 +29,16 @@
       "source": "registry",
       "testable": false
     },
+    "com.unity.burst@1.8.23": {
+      "name": "com.unity.burst",
+      "displayName": "Burst",
+      "resolvedPath": "/Users/Nathaniel/Documents/BullseyeBill/Library/PackageCache/com.unity.burst@6aff1dd08a0c",
+      "fingerprint": "6aff1dd08a0c2f92ddb7f56ec033a5cb88967056",
+      "editorCompatibility": "2021.3.0a1",
+      "version": "1.8.23",
+      "source": "registry",
+      "testable": false
+    },
     "com.unity.collab-proxy@2.8.2": {
       "name": "com.unity.collab-proxy",
       "displayName": "Version Control",
@@ -441,26 +451,6 @@
       "source": "builtin",
       "testable": false
     },
-    "com.unity.searcher@4.9.3": {
-      "name": "com.unity.searcher",
-      "displayName": "Searcher",
-      "resolvedPath": "/Users/Nathaniel/Documents/BullseyeBill/Library/PackageCache/com.unity.searcher@1e17ce91558d",
-      "fingerprint": "1e17ce91558d1d9127554adc03d275f39a7466a2",
-      "editorCompatibility": "2019.1.0a1",
-      "version": "4.9.3",
-      "source": "registry",
-      "testable": false
-    },
-    "com.unity.burst@1.8.21": {
-      "name": "com.unity.burst",
-      "displayName": "Burst",
-      "resolvedPath": "/Users/Nathaniel/Documents/BullseyeBill/Library/PackageCache/com.unity.burst@59eb6f11d242",
-      "fingerprint": "59eb6f11d2422f95682320d9daa3e79fdb076744",
-      "editorCompatibility": "2020.3.0a1",
-      "version": "1.8.21",
-      "source": "registry",
-      "testable": false
-    },
     "com.unity.mathematics@1.3.2": {
       "name": "com.unity.mathematics",
       "displayName": "Mathematics",
@@ -468,6 +458,16 @@
       "fingerprint": "8017b507cc74bf0a1dd14b18aa860569f807314d",
       "editorCompatibility": "2021.3.0a1",
       "version": "1.3.2",
+      "source": "registry",
+      "testable": false
+    },
+    "com.unity.searcher@4.9.3": {
+      "name": "com.unity.searcher",
+      "displayName": "Searcher",
+      "resolvedPath": "/Users/Nathaniel/Documents/BullseyeBill/Library/PackageCache/com.unity.searcher@1e17ce91558d",
+      "fingerprint": "1e17ce91558d1d9127554adc03d275f39a7466a2",
+      "editorCompatibility": "2019.1.0a1",
+      "version": "4.9.3",
       "source": "registry",
       "testable": false
     },

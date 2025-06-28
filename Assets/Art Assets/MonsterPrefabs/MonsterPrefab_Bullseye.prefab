@@ -305,9 +305,9 @@ GameObject:
   m_Component:
   - component: {fileID: 943735702098398198}
   - component: {fileID: 6202340413488445114}
-  - component: {fileID: 7584216008842922211}
   - component: {fileID: 4406785239033141290}
   - component: {fileID: 5426505569191900490}
+  - component: {fileID: 1699636772538024570}
   m_Layer: 0
   m_Name: MonsterPrefab_Bullseye
   m_TagString: Untagged
@@ -386,28 +386,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!64 &7584216008842922211
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4108228226442671929}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!54 &4406785239033141290
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -431,7 +409,7 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
@@ -448,6 +426,56 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 10
+  leftEyeRenderer: {fileID: 308482569181227907}
+  rightEyeRenderer: {fileID: 8447727170739804559}
+  mouthRenderer: {fileID: 2898837446842443195}
+  leftEyeSprites:
+  - {fileID: 21300000, guid: d9b3830dcf6df4c6bbe9136367649a54, type: 3}
+  - {fileID: 21300000, guid: c9cef5aa17f9e42a8a38ed4418b65247, type: 3}
+  - {fileID: 21300000, guid: 0a038ba727b264cc4873dc6d887c0fee, type: 3}
+  - {fileID: 21300000, guid: 23f7a6b5b060849478d67052d43b08fd, type: 3}
+  - {fileID: 21300000, guid: d1c4b82b2b36046ed81500ea83c7dc00, type: 3}
+  - {fileID: 21300000, guid: af73ad5a3383747e9a5a02ee29e9bd3e, type: 3}
+  - {fileID: 21300000, guid: 3aaf70109a6674503a0d6c03cd152ece, type: 3}
+  rightEyeSprites:
+  - {fileID: 21300000, guid: 39a8b828578194069824101d52ed858d, type: 3}
+  - {fileID: 21300000, guid: eb5ac93c12c0745b9952abad048b704d, type: 3}
+  - {fileID: 21300000, guid: 9e56c015cf486442e9ba73690698df27, type: 3}
+  - {fileID: 21300000, guid: 454ea2b1e71a64d8fae4550d4177dc98, type: 3}
+  - {fileID: 21300000, guid: 3ce53e73e28ea4ceca1de939ad949f09, type: 3}
+  - {fileID: 21300000, guid: 766e1e5330050427eac9bff939ef2e41, type: 3}
+  - {fileID: 21300000, guid: 310a1f32fdbb14b51ae58da1eca201e9, type: 3}
+  mouthSprites:
+  - {fileID: 21300000, guid: 3a861d981174f4444901340585448e1f, type: 3}
+  - {fileID: 21300000, guid: d47df9ab08f22462a9daf27ace2e80ac, type: 3}
+  - {fileID: 21300000, guid: 6a2a7eed366e3443286e6500251a11e8, type: 3}
+  - {fileID: 21300000, guid: 62653125cdb5245f0b5e4be813a872af, type: 3}
+  - {fileID: 21300000, guid: 06d8c23dac5cd41c6b3f3a8c71b4033d, type: 3}
+  - {fileID: 21300000, guid: dd27f89b5a4064f1eb610da6aedaa6d1, type: 3}
+  - {fileID: 21300000, guid: 11c889e16dfc143d1bca1e3c8372db2c, type: 3}
   targetPosition: {fileID: 0}
   rotateTowardCenter: 0
   dartboardCenter: {fileID: 0}
+--- !u!136 &1699636772538024570
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4108228226442671929}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 5.7559333
+  m_Height: 11.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}

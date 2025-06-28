@@ -27,7 +27,12 @@ public class MonsterManager : MonoBehaviour
     {
         ClearMonster();
 
-        int type = Mathf.Clamp(level, 1, 6);
+        int type = 1; // Default to bullseye for round 1
+        if (level > 1)
+        {
+            type = Random.Range(2, 7); // Randomly pick 2 through 6 (inclusive)
+        }
+
         GameObject prefab = monsterPrefabs[type - 1];
         Transform spawnPoint = GetSpawnPointForType(type);
 
@@ -47,7 +52,7 @@ public class MonsterManager : MonoBehaviour
             currentMonster.SetHealth(1);
             currentMonster.OnMonsterDefeated += HandleMonsterDefeated;
 
-            activeMonsters.Add(currentMonster); 
+            activeMonsters.Add(currentMonster);
         }
     }
 
@@ -115,5 +120,50 @@ public class MonsterManager : MonoBehaviour
 
         activeMonsters.Clear();
         currentMonster = null;
+    }
+
+#if UNITY_EDITOR
+    [ContextMenu("Test All Monster Spawns")]
+    public void TestAllMonsterSpawns()
+    {
+        ClearMonster(); // Clear any previously spawned monsters
+
+        for (int type = 1; type <= 6; type++)
+        {
+            List<Transform> spawnPoints = GetSpawnPointsListForType(type);
+            GameObject prefab = monsterPrefabs[type - 1];
+
+            foreach (Transform spawnPoint in spawnPoints)
+            {
+                if (spawnPoint == null || prefab == null) continue;
+
+                GameObject monsterObj = Instantiate(prefab, spawnPoint.position, Quaternion.identity);
+                monsterObj.name = $"MonsterType{type}_At_{spawnPoint.name}";
+
+                MonsterController controller = monsterObj.GetComponent<MonsterController>();
+                if (controller != null)
+                {
+                    bool rotateToCenter = (type >= 3 && type <= 6);
+                    controller.Setup(spawnPoint, dartboardCenter, rotateToCenter);
+                    controller.SetHealth(1);
+                    activeMonsters.Add(controller);
+                }
+            }
+        }
+    }
+#endif
+
+    List<Transform> GetSpawnPointsListForType(int type)
+    {
+        switch (type)
+        {
+            case 1: return bullseyePoints;
+            case 2: return ring1Points;
+            case 3: return triangle2Points;
+            case 4: return ring3Points;
+            case 5: return triangle4Points;
+            case 6: return ring5Points;
+            default: return new List<Transform>();
+        }
     }
 }

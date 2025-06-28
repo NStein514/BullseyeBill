@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class OptionsMenuUI : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class OptionsMenuUI : MonoBehaviour
     public void SetHand1() { CustomizationManager.SetHand(0); UpdatePreviews(); }
     public void SetHand2() { CustomizationManager.SetHand(1); UpdatePreviews(); }
     public void SetHand3() { CustomizationManager.SetHand(2); UpdatePreviews(); }
+    public void SetHand4() { CustomizationManager.SetHand(3); UpdatePreviews(); }
 
     public void SetDart1() { CustomizationManager.SetDart(0); UpdatePreviews(); }
     public void SetDart2() { CustomizationManager.SetDart(1); UpdatePreviews(); }

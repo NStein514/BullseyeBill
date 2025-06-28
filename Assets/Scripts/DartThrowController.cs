@@ -7,6 +7,8 @@ public class DartThrowController : MonoBehaviour
 {
     private List<Transform> activeThrownDarts = new List<Transform>();
     public Transform handTransform;
+    public Transform dartSpawnPoint; 
+
     [System.Serializable]
     public struct HandSpriteSet
     {
@@ -35,8 +37,12 @@ public class DartThrowController : MonoBehaviour
     public delegate void ThrowEvent();
     public event ThrowEvent OnDartThrown;
 
+    private bool canGrabDart = false;
+
     void Start()
     {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined; 
         CustomizationManager.LoadSelections();
         SetHandSprite(handSpriteSets[CustomizationManager.SelectedHandIndex].idle);
         initialHandPosition = handTransform.position;
@@ -45,8 +51,22 @@ public class DartThrowController : MonoBehaviour
 
     void Update()
     {
+        UpdateHandPosition(); 
         HandleInput();
         UpdateThrownDartScales();
+    }
+
+    public void StartNewRound()
+    {
+        ResetThrows();
+        SpawnNewDart(); 
+    }
+
+    void UpdateHandPosition()
+    {
+        Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        mouseWorld.z = 0;
+        handTransform.position = mouseWorld; 
     }
 
     void HandleInput()
@@ -55,23 +75,19 @@ public class DartThrowController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            Vector3 mouseWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            mouseWorld.z = 0;
-
-            Collider2D hit = Physics2D.OverlapPoint(mouseWorld);
-            if (hit != null && (hit.transform == handTransform || hit.transform == currentDart))
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out RaycastHit hitInfo, 100f))
             {
-                isDragging = true;
-                dragStartTime = Time.time;
-                dragStartMousePos = mouseWorld;
-                dragStartHandPos = handTransform.position;
-
-                SetHandSprite(handSpriteSets[CustomizationManager.SelectedHandIndex].pulledBack);
-
-                // Make sure dart is held tightly
-                if (currentDart != null)
+                if (hitInfo.transform == currentDart || hitInfo.transform.IsChildOf(currentDart))
                 {
-                    currentDart.SetParent(dartHoldPoint);
+                    isDragging = true;
+                    dragStartTime = Time.time;
+                    dragStartMousePos = handTransform.position;
+                    dragStartHandPos = handTransform.position;
+
+                    SetHandSprite(handSpriteSets[CustomizationManager.SelectedHandIndex].pulledBack);
+
+                    currentDart.SetParent(handTransform);
                     currentDart.localPosition = Vector3.zero;
                     currentDart.localRotation = Quaternion.identity;
                 }
@@ -181,20 +197,32 @@ public class DartThrowController : MonoBehaviour
 
     void SpawnNewDart()
     {
-        if (dartPrefab == null || dartHoldPoint == null) return;
+        if (dartPrefab == null || dartSpawnPoint == null) return;
 
-        Transform dart = Instantiate(dartPrefab, dartHoldPoint.position, Quaternion.identity);
-        dart.SetParent(dartHoldPoint, worldPositionStays: false);
+        Transform dart = Instantiate(dartPrefab, dartSpawnPoint.position, Quaternion.identity);
+        dart.SetParent(null);
         dart.localRotation = Quaternion.identity;
 
         Rigidbody rb = dart.GetComponent<Rigidbody>();
         rb.isKinematic = true;
         rb.useGravity = false;
 
+        Collider col = dart.GetComponent<Collider>();
+        if (col != null) col.enabled = true;
+
         SpriteRenderer sr = dart.GetComponentInChildren<SpriteRenderer>();
         sr.sprite = dartSprites[CustomizationManager.SelectedDartIndex];
 
+        StartCoroutine(DelayedSetCurrentDart(dart));
+    }
+
+    IEnumerator DelayedSetCurrentDart(Transform dart)
+    {
+        canGrabDart = false;
+        yield return new WaitForFixedUpdate(); // wait until physics update
         currentDart = dart;
+        yield return null; // wait 1 more frame for collider setup
+        canGrabDart = true;
     }
 
     public void ResetThrows()

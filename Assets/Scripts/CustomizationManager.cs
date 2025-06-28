@@ -9,12 +9,14 @@ public static class CustomizationManager
     {
         SelectedHandIndex = index;
         PlayerPrefs.SetInt("HandIndex", index);
+        PlayerPrefs.Save(); 
     }
 
     public static void SetDart(int index)
     {
         SelectedDartIndex = index;
         PlayerPrefs.SetInt("DartIndex", index);
+        PlayerPrefs.Save(); 
     }
 
     public static void LoadSelections()

@@ -7,21 +7,22 @@ public class MonsterController : MonoBehaviour
     private int currentHealth;
     private bool isDead = false;
 
-    [Header("Animation")]
-    private Animator animator;
+    [Header("Face Parts")]
+    public SpriteRenderer leftEyeRenderer;
+    public SpriteRenderer rightEyeRenderer;
+    public SpriteRenderer mouthRenderer;
+
+    public Sprite[] leftEyeSprites;
+    public Sprite[] rightEyeSprites;
+    public Sprite[] mouthSprites;
 
     [Header("Target Info")]
     public Transform targetPosition;
     public bool rotateTowardCenter = false;
-    public Transform dartboardCenter; // Assign via MonsterManager
+    public Transform dartboardCenter;
 
     public delegate void MonsterDefeatedEvent();
     public event MonsterDefeatedEvent OnMonsterDefeated;
-
-    void Awake()
-    {
-        animator = GetComponent<Animator>();
-    }
 
     public void SetHealth(int health)
     {
@@ -42,22 +43,28 @@ public class MonsterController : MonoBehaviour
         rotateTowardCenter = rotateToCenter;
 
         if (rotateTowardCenter && dartboardCenter != null)
-        {
             OrientTowardDartboardCenter();
-        }
         else if (target != null)
-        {
             transform.rotation = target.rotation;
-        }
+
+        RandomizeFaceParts();
     }
 
     void OrientTowardDartboardCenter()
     {
         Vector3 toCenter = dartboardCenter.position - transform.position;
-
-        // Only use x/y to rotate around z (keep sprite upright)
         float angle = Mathf.Atan2(toCenter.y, toCenter.x) * Mathf.Rad2Deg + 90f;
         transform.rotation = Quaternion.Euler(0, 0, angle);
+    }
+
+    void RandomizeFaceParts()
+    {
+        if (leftEyeSprites.Length >= 6 && rightEyeSprites.Length >= 6 && mouthSprites.Length >= 6)
+        {
+            leftEyeRenderer.sprite = leftEyeSprites[Random.Range(0, 6)];
+            rightEyeRenderer.sprite = rightEyeSprites[Random.Range(0, 6)];
+            mouthRenderer.sprite = mouthSprites[Random.Range(0, 6)];
+        }
     }
 
     public void TakeDamage(int damage)
@@ -65,9 +72,6 @@ public class MonsterController : MonoBehaviour
         if (isDead) return;
 
         currentHealth -= damage;
-
-        if (animator != null)
-            animator.SetTrigger("Hit");
 
         if (currentHealth <= 0)
         {
@@ -79,8 +83,10 @@ public class MonsterController : MonoBehaviour
     {
         isDead = true;
 
-        if (animator != null)
-            animator.SetTrigger("Die");
+        // Set all face parts to X versions (index 6)
+        if (leftEyeSprites.Length > 6) leftEyeRenderer.sprite = leftEyeSprites[6];
+        if (rightEyeSprites.Length > 6) rightEyeRenderer.sprite = rightEyeSprites[6];
+        if (mouthSprites.Length > 6) mouthRenderer.sprite = mouthSprites[6];
 
         OnMonsterDefeated?.Invoke();
         Destroy(gameObject, 0.5f);
