@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using UnityEditor.IMGUI.Controls;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,7 +8,7 @@ public class GameManager : MonoBehaviour
     public MonsterManager monsterManager;
 
     public Text scoreText;
-    public Text liveScoreText; 
+    public Text liveScoreText;
     public Text throwCountText;
     public Text timerText;
     public Text levelText;
@@ -50,61 +49,61 @@ public class GameManager : MonoBehaviour
         totalThrows++;
         throwCountText.text = $"Throws: {totalThrows}";
 
-        // Check if the monster was defeated right after the throw
-        if (monsterManager != null && monsterManager.AreAllMonstersDefeated())
-        {
-            levelCleared = true;
-            dartThrowController.ResetThrows();
-            StartCoroutine(AdvanceToNextLevel());
-            return;
-        }
+        if (levelCleared) return;
 
-        // If max throws used, proceed with monster action
-        if (dartThrowController != null && dartThrowController.throwsThisRound >= dartThrowController.maxThrowsPerRound)
+        if (dartThrowController.throwsThisRound >= dartThrowController.maxThrowsPerRound)
         {
             roundActive = false;
-            StartCoroutine(MonsterTurnAndNextRound());
+            StartCoroutine(MonsterTurnAndFinalCheck());
         }
     }
 
-    IEnumerator MonsterTurnAndNextRound()
+    IEnumerator MonsterTurnAndFinalCheck()
     {
-        yield return new WaitForSeconds(1f);
+        // Wait a moment for possible late collision detection
+        yield return new WaitForSeconds(0.3f);
+
+        if (monsterManager.AreAllMonstersDefeated())
+        {
+            OnLevelCleared();
+            yield break;
+        }
 
         if (monsterManager != null)
             monsterManager.MoveOrAttackMonsters();
 
         yield return new WaitForSeconds(1f);
 
-        if (!levelCleared)
+        // Double-check again after monster animation/move
+        if (levelCleared) yield break;
+
+        if (monsterManager.AreAllMonstersDefeated())
         {
-            if (!monsterManager.AreAllMonstersDefeated())
-            {
-                GameOver();
-            }
-            else
-            {
-                OnLevelCleared();
-            }
+            OnLevelCleared();
+        }
+        else
+        {
+            GameOver();
         }
     }
 
     void StartLevel()
     {
         levelCleared = false;
-        levelText.text = $"{level}";
 
+        levelText.text = $"{level}";
         dartThrowController.ResetThrows();
         monsterManager.SpawnMonsters(level);
         dartThrowController.StartNewRound();
 
         roundActive = true;
-        UpdateUI(); 
+        UpdateUI();
     }
 
     void OnLevelCleared()
     {
-        if (levelCleared) return; // Prevent multiple calls
+        if (levelCleared) return;
+
         levelCleared = true;
         level++;
 
@@ -127,6 +126,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        if (levelCleared) return; // Don't show game over if already cleared
         roundActive = false;
         gameOverPanel.SetActive(true);
         scoreText.text = $"Score: {CalculateScore()}";
@@ -134,12 +134,11 @@ public class GameManager : MonoBehaviour
 
     int CalculateScore()
     {
-        int score = Mathf.Max(0, (int)(1000 - (elapsedTime * 10 + totalThrows * 5)));
-        return score;
+        return Mathf.Max(0, (int)(1000 - (elapsedTime * 10 + totalThrows * 5)));
     }
 
     public void ReplayGame()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("BullseyeBill"); 
+        UnityEngine.SceneManagement.SceneManager.LoadScene("BullseyeBill");
     }
 }
